@@ -35,15 +35,15 @@ def get_answer(input):
 Generate a Cypher query to match the following nodes and relations:
 Nodes:
 
-USER: Represents user nodes in the graph. Properties include 'user_id' and 'username'.
-PROJECT: Represents project nodes in the graph. Properties include 'project_id' and 'project_name'.
-TASK: Represents task nodes in the graph. Properties include 'id', 'month_id', 'message', 'hours', and 'updated_at' which represents when the task is updated.
-TASK_STATUS: Represents task status nodes in the graph. Properties include 'status_id' and 'status_name'.
+USER: Represents user nodes in the graph. Properties include 'user_id' which represents id of user and 'username' which represents name of user.
+PROJECT: Represents project nodes in the graph. Properties include 'project_id' which represents id of project and 'project_name' which represents name of project.
+TASK: Represents task nodes in the graph. Properties include 'id' which represents id of task, 'month_id' which represents id of the month, 'message' which represents message logged by user for the task, 'hours' which represents hours worked on that particular task, and 'updated_at' which represents when the task is updated.
+TASK_STATUS: Represents task status nodes in the graph. Properties include 'status_id' which represents id of status and 'status_name' which represents name of status.
 
 Relations:
 
 works_on: Represents the relationship between a USER (from) and a PROJECT (to). The label for this relationship is 'works_on'.
-belongs_to: Represents the relationship between a TASK (from) and a PROJECT (to). The label for this relationship is 'belongs_to'.
+belongs_to: Represents the relationship between a TASK (from) and a PROJECT (to). The label for this relationship is 'belongs_to' and it has property 'task_date' which represents on which date this task was assigned.
 created: Represents the relationship between a USER (from) and a TASK (to). The label for this relationship is 'created'. It has 'created_at' property which represents when the task was created by the user.
 has_status: Represents the relationship between a TASK (from) and a TASK_STATUS (to). The label for this relationship is 'has_status'.
     For example,
