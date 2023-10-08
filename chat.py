@@ -59,7 +59,7 @@ has_status: Represents the relationship between a TASK (from) and a TASK_STATUS 
     MATCH (u:USER)-[:works_on]->(p:PROJECT) RETURN u.username, p.project_name
 
     Example 4-Get the sum of total hours that a charan worked on Nursing Portal project along with statuses?, the Cypher command will be something like this
-    MATCH (u:USER {{username: "charan"}})-[:created]->(t:TASK)-[:belongs_to]->(p:PROJECT {project_name: "Nursing Portal"}) 
+    MATCH (u:USER {{username: "charan"}})-[:created]->(t:TASK)-[:belongs_to]->(p:PROJECT {{project_name: "Nursing Portal"}}) 
     MATCH (t)-[:has_status]->(ts:TASK_STATUS)
     RETURN SUM(t.hours), ts.status_name
 
