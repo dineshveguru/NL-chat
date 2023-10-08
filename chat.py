@@ -59,7 +59,7 @@ has_status: Represents the relationship between a TASK (from) and a TASK_STATUS 
     MATCH (u:USER)-[:works_on]->(p:PROJECT) RETURN u.username, p.project_name
 
     Example 4-Get the sum of total hours that a charan worked on Nursing Portal project along with statuses?, the Cypher command will be something like this
-    MATCH (u:USER {{username: "charan"}})-[:created]->(t:TASK)-[:belongs_to]->(p:PROJECT {project_name: "Nursing Portal"}) 
+    MATCH (u:USER {{username: "charan"}})-[:created]->(t:TASK)-[:belongs_to]->(p:PROJECT {{project_name: "Nursing Portal"}}) 
     MATCH (t)-[:has_status]->(ts:TASK_STATUS)
     RETURN SUM(t.hours), ts.status_name
 
@@ -95,10 +95,10 @@ import streamlit as st
 
 
 # Function to execute Cypher query and get results from Neo4j
-def execute_cypher_query(query):
-    with driver.session() as session:
-        result = session.run(query)
-        return result.data()
+# def execute_cypher_query(query):
+#     with driver.session() as session:
+#         result = session.run(query)
+#         return result.data()
 
 
 st.title("Aurora Chat 🤖")
@@ -124,7 +124,7 @@ if st.button("Generate"):
     cypher_query = get_answer(user_question)
 
     # Execute Cypher query and get results from Neo4j
-    results = execute_cypher_query(cypher_query)
+    # results = execute_cypher_query(cypher_query)
 
     # Display results
     st.write("Generated Cypher Query:")
@@ -133,11 +133,11 @@ if st.button("Generate"):
     st.write("Query Results:")
 
     # Check if there are results to display
-    if results:
-        # Convert results to a list of dictionaries for displaying in a table
-        data = [dict(row) for row in results]
+    # if results:
+    #     # Convert results to a list of dictionaries for displaying in a table
+    #     data = [dict(row) for row in results]
 
-        # Display results in a table
-        st.table(data)
-    else:
-        st.write("No results found.")
+    #     # Display results in a table
+    #     st.table(data)
+    # else:
+    #     st.write("No results found.")
