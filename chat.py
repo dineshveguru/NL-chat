@@ -43,8 +43,8 @@ TASK_STATUS: Represents task status nodes in the graph. Properties include 'stat
 Relations:
 
 works_on: Represents the relationship between a USER (from) and a PROJECT (to). The label for this relationship is 'works_on'.
-belongs_to: Represents the relationship between a TASK (from) and a PROJECT (to). The label for this relationship is 'belongs_to' and it has property 'task_date' which represents on which date this task was assigned.
-created: Represents the relationship between a USER (from) and a TASK (to). The label for this relationship is 'created'. It has 'created_at' property which represents when the task was created by the user.
+belongs_to: Represents the relationship between a TASK (from) and a PROJECT (to). The label for this relationship is 'belongs_to' and it has property 'task_date' which represents on which date this task was assigned to user.
+created: Represents the relationship between a USER (from) and a TASK (to). The label for this relationship is 'created'. It has 'created_at' property which represents when the task was created by the user or he/she started working on the assigned task.
 has_status: Represents the relationship between a TASK (from) and a TASK_STATUS (to). The label for this relationship is 'has_status'.
     For example,
     Example 1 - Give me a list of all users and total number of hours did each user worked on each project
