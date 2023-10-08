@@ -4,8 +4,8 @@ from neo4j import GraphDatabase
 # from dotenv import dotenv_values
 
 # config = dotenv_values(".env")
-URI = "neo4j+ssc://21769e3d.databases.neo4j.io"
-AUTH = ("neo4j", "sNLsVe6joJjNuRTNjOZRCoVJRSeNAMmAT1zr4-fiA_g")
+URI = "neo4j+s://11da6074.databases.neo4j.io"
+AUTH = ("neo4j", "s4VCSjScsCexQnmJbCb__BHJkfcu6QD8oR_66kzv3hE")
 driver = GraphDatabase.driver(URI, auth=AUTH)
 
 palm.configure(api_key="AIzaSyAM66Voz__ZZo43m-6pThWp1IeFcasF1vo")
@@ -37,61 +37,48 @@ Nodes:
 
 USER: Represents user nodes in the graph. Properties include 'user_id' and 'username'.
 PROJECT: Represents project nodes in the graph. Properties include 'project_id' and 'project_name'.
-TASK: Represents task nodes in the graph. Properties include 'id', 'month_id', 'task_date', 'message', 'hours', 'created_at', and 'updated_at'.
+TASK: Represents task nodes in the graph. Properties include 'id', 'month_id', 'message', 'hours', and 'updated_at' which represents when the task is updated.
 TASK_STATUS: Represents task status nodes in the graph. Properties include 'status_id' and 'status_name'.
+
 Relations:
 
-works_on: Represents the relationship between a user (from) and a project (to). The label for this relationship is 'works_on'.
-belongs_to: Represents the relationship between a task (from) and a project (to). The label for this relationship is 'belongs_to'.
-created: Represents the relationship between a task (from) and a user (to). The label for this relationship is 'created'.
-has: Represents the relationship between a task (from) and a task status (to). The label for this relationship is 'has'.
+works_on: Represents the relationship between a USER (from) and a PROJECT (to). The label for this relationship is 'works_on'.
+belongs_to: Represents the relationship between a TASK (from) and a PROJECT (to). The label for this relationship is 'belongs_to'.
+created: Represents the relationship between a USER (from) and a TASK (to). The label for this relationship is 'created'. It has 'created_at' property which represents when the task was created by the user.
+has_status: Represents the relationship between a TASK (from) and a TASK_STATUS (to). The label for this relationship is 'has_status'.
     For example,
-    Example 1 - Get Count of all the projects updated on 2023-08-06?
+    Example 1 - Give me a list of all users and total number of hours did each user worked on each project
     , the Cypher command will be something like this
-    MATCH (u:USER )-[:works_on]->(p:PROJECT)
-    MATCH (t:TASK)-[h:has]->(ts:TASK_STATUS)
-    WHERE t.updated_at ="2023-08-06"
-    RETURN COUNT(p) AS numberOfProjects
+    MATCH(u:USER)-[:created]->(t:TASK)-[:belongs_to]->(p:PROJECT)
+    RETURN u.username, p.project_name, SUM(t.hours)
 
-    Example 2 - get projects done by both Lakshmi and Ramadurgam?, the Cypher command will be something like this
-    MATCH (l:USER)-[:works_on]->(project:PROJECT)
-    WHERE l.username = 'Lakshmi'
-    WITH collect(DISTINCT project) as projects_lakshmi
-    MATCH (r:USER)-[:works_on]->(project:PROJECT)
-    WHERE r.username = 'Ramadurgam' AND project IN projects_lakshmi
-    RETURN project.project_name
+    Example 2 - Which users worked on 7th August 2023, the Cypher command will be something like this
+    MATCH (u:USER)-[c:created {{created_at: date("2023-08-07")}}]->(t:TASK) RETURN DISTINCT u.username
 
-    Example 3-Get the total projects done in 2023-08-06?, the Cypher command will be something like this
-    MATCH (u:USER )-[:works_on]->(p:PROJECT)
-    MATCH (t:TASK)-[h:has]->(ts:TASK_STATUS)
-    WHERE t.updated_at ="2023-08-06"
-    RETURN COUNT(p) AS numberOfProjects
+    Example 3-Get all the users along with the projects they worked, the Cypher command will be something like this
+    MATCH (u:USER)-[:works_on]->(p:PROJECT) RETURN u.username, p.project_name
 
-    Example 4-Get the sum of total hours that a user worked on RH QMS project along with statuses?, the Cypher command will be something like this
-    MATCH (u:USER)-[:works_on]->(p:PROJECT{{project_name:"RH QMS"}})
-    MATCH (t:TASK)-[h:has]->(ts:TASK_STATUS)
-    RETURN DISTINCT u.username as user, p.project_name, ts.status_name, SUM(t.hours) as totalhours
+    Example 4-Get the sum of total hours that a charan worked on Nursing Portal project along with statuses?, the Cypher command will be something like this
+    MATCH (u:USER {{username: "charan"}})-[:created]->(t:TASK)-[:belongs_to]->(p:PROJECT {project_name: "Nursing Portal"}) 
+    MATCH (t)-[:has_status]->(ts:TASK_STATUS)
+    RETURN SUM(t.hours), ts.status_name
 
-    Example 5-Get the count of projects that are created after 2023-08-06?, the Cypher command will be something like this
-    MATCH (u:USER )-[:works_on]->(p:PROJECT)
-    MATCH (t:TASK)-[h:has]->(ts:TASK_STATUS)
-    WHERE t.created_at>="2023-08-06 "
-    RETURN COUNT(p) AS numberOfProjects
-       Example 6- list out the total hours spent by each user on each project?, the Cypher command will be something like this
-    MATCH (t:TASK)-[:created]->(u:USER)-[:works_on]->(p:PROJECT)
-    RETURN u.username,p.project_name,SUM(t.hours)
+    Example 5-Get users who worked on their projects after 7th August 2023 along with their task messages, the Cypher command will be something like this
+    MATCH (u:USER)-[c:created]->(t:TASK)-[:belongs_to]->(p:PROJECT) WHERE c.created_at > date("2023-08-07") RETURN u.username, p.project_name, t.message
 
-    Example 7-List out the users and also total hours spent on project RH QMS and in development status?, the Cypher command will be something like this
-    MATCH (u:USER)-[:works_on]->(p:PROJECT{{project_name:"RH QMS"}})
-    MATCH (t:TASK)-[h:has]->(ts:TASK_STATUS{{status_name:"Development"}})
-    RETURN DISTINCT u.username as user,SUM(t.hours) as totalhours
+    Example 6- list out the total hours spent by each user on each project?, the Cypher command will be something like this
+    MATCH (u:USER)-[c:created]->(t:TASK)-[:belongs_to]->(p:PROJECT) RETURN u.username, p.project_name, SUM(t.hours)
+
+    Example 7- List all the projects and their durations to complete the project, the Cypher command will be something like this
+    MATCH (t:TASK)-[b:belongs_to]->(p:PROJECT)
+    RETURN p.project_name, duration.between(MIN(b.task_date), MAX(b.task_date)).days
 
     example 8-when did Nursing Portal project started?, the Cypher command will be something like this
-    MATCH (project:PROJECT {{project_name: 'Nursing Portal'}})<-[:belongs_to]-(task:TASK)
-    WITH MIN(task.task_date) AS project_start_date
-    RETURN project_start_date
+    MATCH (t:TASK)-[b:belongs_to]->(p:PROJECT {{project_name: "Nursing Portal"}})
+    RETURN MIN(b.task_date)
     Dont include ``` in the output 
     {input}
+    
     """
 
     response = palm.generate_text(**defaults, prompt=prompt)
@@ -114,7 +101,7 @@ def execute_cypher_query(query):
         return result.data()
 
 
-st.title("Aurora Chat 🕊️")
+st.title("Aurora Chat 🤖")
 
 # User input
 user_question = st.text_input("Ask a question:")
