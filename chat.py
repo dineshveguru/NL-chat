@@ -106,25 +106,25 @@ st.title("Aurora Chat 🤖")
 # User input
 user_question = st.text_input("Ask a question:")
 
-if st.button("Generate and Execute"):
-    # Generate Cypher query based on user question
-    cypher_query = get_answer(user_question)
+# if st.button("Generate and Execute"):
+#     # Generate Cypher query based on user question
+#     cypher_query = get_answer(user_question)
 
-    # Execute Cypher query and get results from Neo4j
-    results = execute_cypher_query(cypher_query)
+#     # Execute Cypher query and get results from Neo4j
+#     results = execute_cypher_query(cypher_query)
 
-    # Display results
-    st.write("Generated Cypher Query:")
-    st.code(cypher_query)
+#     # Display results
+#     st.write("Generated Cypher Query:")
+#     st.code(cypher_query)
 
-    st.write("Query Results:")
-    st.write(results)
+#     st.write("Query Results:")
+#     st.write(results)
 if st.button("Generate"):
     # Generate Cypher query based on user question
     cypher_query = get_answer(user_question)
 
     # Execute Cypher query and get results from Neo4j
-    # results = execute_cypher_query(cypher_query)
+    results = execute_cypher_query(cypher_query)
 
     # Display results
     st.write("Generated Cypher Query:")
